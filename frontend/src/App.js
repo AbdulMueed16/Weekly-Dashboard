@@ -33,7 +33,7 @@ function App() {
 
     console.log("Fetching latest data...");
 
-    axios.get("http://127.0.0.1:8000/api/dashboard")
+    axios.get("/api/dashboard")
       .then((response) => {
 
         console.log(response.data);
