@@ -291,7 +291,6 @@ function App() {
                   <th>Escalated to L2</th>
                   <th>Solved/Closed</th>
                   <th>Unresolved Tickets</th>
-                  <th>Efficiency</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,11 +301,6 @@ function App() {
                     <td>{emp.escalated}</td>
                     <td>{emp.closed}</td>
                     <td className="red-text">{emp.unresolved}</td>
-                    <td>
-                      <span className="efficiency-pill">
-                        {emp.owned > 0 ? ((emp.closed / emp.owned) * 100).toFixed(0) : 0}%
-                      </span>
-                    </td>
                   </tr>
                 ))}
               </tbody>
