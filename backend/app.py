@@ -10,10 +10,6 @@ UPLOAD_FOLDER = "/home/user/Weekly-Dashboard/dashboard-data"
 FILE_NAME = "latest_dashboard.xlsx"
 FILE_PATH = os.path.join(UPLOAD_FOLDER, FILE_NAME)
 
-# Automatically create the folder if it doesn't exist yet
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 # ==========================================
 # WRITING LOGIC: Saves the uploaded file here
 # ==========================================
