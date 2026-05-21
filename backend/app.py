@@ -6,13 +6,10 @@ app = Flask(__name__)
 CORS(app)  
 
 # YOUR SPECIFIC VM FOLDER PATH
-UPLOAD_FOLDER = "/home/user/Weekly-Dashboard/dashboard-data"
+UPLOAD_FOLDER = "/home/fnc_user_4/Weekly-Dashboard/dashboard-data"
 FILE_NAME = "latest_dashboard.xlsx"
 FILE_PATH = os.path.join(UPLOAD_FOLDER, FILE_NAME)
 
-# ==========================================
-# WRITING LOGIC: Saves the uploaded file here
-# ==========================================
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
