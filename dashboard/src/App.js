@@ -249,8 +249,8 @@ function App() {
         {/* HEADER */}
         <header className="glass-header">
           <div>
-            <h1>CloudBees Performance Metrics Tracker</h1>
-            <p>Upload your operational master template below</p>
+            <h1>CloudBees Dashboard</h1>
+            <p>Upload the excel sheet</p>
           </div>
           <div>
             <input type="file" accept=".xlsx,.xls" onChange={handleFileUpload} />
