@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import * as XLSX from "xlsx";
 import { Bar, Doughnut } from "react-chartjs-2";
 
@@ -29,8 +29,6 @@ ChartJS.register(
 
 function App() {
   const [employees, setEmployees] = useState([]);
-  
-  // Dynamic targets array parsed directly from the excel rows/columns
   const [monthlyTargets, setMonthlyTargets] = useState([]);
 
   const [summary, setSummary] = useState({
@@ -39,23 +37,20 @@ function App() {
     totalBacklog: 0,
     totalEscalated: 0,
     escalationRate: 0,
-    
-    // Weekly target vs accomplished data arrays
     weeklyHandleTarget: [0, 0, 0, 0],
     weeklyHandleActual: [0, 0, 0, 0],
     weeklySolveTarget: [0, 0, 0, 0],
     weeklySolveActual: [0, 0, 0, 0],
   });
 
-  // ==========================================
-  // DYNAMIC EXCEL PARSER LOGIC
-  // ==========================================
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Since you set up Nginx reverse proxy routing, relative paths route automatically
+  const API_BASE_URL = window.location.origin;
 
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data, { type: "array" });
+  // ==========================================
+  // EXTRACTED REUSABLE PARSER LOGIC
+  // ==========================================
+  const parseExcelData = useCallback((arrayBuffer) => {
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
     // --- PARSE SHEET: DASHBOARD ---
     const dashboardSheetName = workbook.SheetNames.find(name => 
@@ -75,20 +70,17 @@ function App() {
 
       const firstCell = row[0] ? String(row[0]).toLowerCase().trim() : "";
 
-      // Detect start of Monthly Targets section
       if (firstCell.includes("monthly targets")) {
         inMonthlyTargets = true;
         continue;
       }
 
-      // Dynamically extract each row/column pair inside Monthly Targets section
       if (inMonthlyTargets) {
         if (firstCell.includes("individual performance")) {
           inMonthlyTargets = false;
         } else if (row[0]) {
           const label = String(row[0]).trim();
           const value = row[1];
-          // Skip the table sub-header row
           if (label.toLowerCase() !== "metric") {
             extractedTargets.push({
               label: label.toUpperCase(),
@@ -98,7 +90,6 @@ function App() {
         }
       }
 
-      // Locate Agent Header Row for the individual performance table
       const containsAgentHeader = row.some(
         (cell) => String(cell).toLowerCase().trim() === "agent"
       );
@@ -107,7 +98,6 @@ function App() {
       }
     }
 
-    // Save dynamic targets into state array
     setMonthlyTargets(extractedTargets);
 
     // Parse Individual Performance Table
@@ -141,10 +131,10 @@ function App() {
     }
 
     // --- PARSE SHEET: WEEKLY TARGETS SPLIT ---
-    let weeklyHandleTarget = [42, 42, 43, 44];
-    let weeklyHandleActual = [34, 32, 0, 0];
-    let weeklySolveTarget = [33, 33, 34, 35];
-    let weeklySolveActual = [28, 38, 0, 0];
+    let weeklyHandleTarget = [0, 0, 0, 0];
+    let weeklyHandleActual = [0, 0, 0, 0];
+    let weeklySolveTarget = [0, 0, 0, 0];
+    let weeklySolveActual = [0, 0, 0, 0];
 
     const weeklySheetName = workbook.SheetNames.find(name => name.toLowerCase().includes("weekly"));
     if (weeklySheetName) {
@@ -189,6 +179,43 @@ function App() {
       weeklySolveTarget,
       weeklySolveActual,
     });
+  }, []);
+
+  // ==========================================
+  // EFFECT: Fetch Existing Workbook on Mount
+  // ==========================================
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/file`)
+      .then((res) => {
+        if (!res.ok) throw new Error("No operational workspace found stored on VM.");
+        return res.arrayBuffer();
+      })
+      .then((arrayBuffer) => parseExcelData(arrayBuffer))
+      .catch((err) => console.log("Initial server check completed:", err.message));
+  }, [parseExcelData, API_BASE_URL]);
+
+  // ==========================================
+  // HANDLE MANUEL FILE UPLOAD & BACKUP
+  // ==========================================
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // 1. Instantly parse locally for immediate screen rendering feedback
+    const localBuffer = await file.arrayBuffer();
+    parseExcelData(localBuffer);
+
+    // 2. Multi-user pipeline: push copy up to Python Flask filesystem permanent uploads folder
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch(`${API_BASE_URL}/api/upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("VM file write response state:", data.message))
+      .catch((err) => console.error("Could not broadcast or persist workspace to Nginx host:", err));
   };
 
   // ==========================================
