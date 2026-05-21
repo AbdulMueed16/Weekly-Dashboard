@@ -1,144 +1,310 @@
 :root {
-  --glass: rgba(255, 255, 255, 0.03);
+  --glass: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(255, 255, 255, 0.08);
+
   --accent-blue: #3b82f6;
   --accent-green: #10b981;
   --accent-red: #ef4444;
+
+  --text-primary: #f8fafc;
+  --text-secondary: rgba(255, 255, 255, 0.65);
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================
+   GLOBAL & CONTAINERS
+========================================= */
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   background: #020617;
-  font-family: 'Inter', sans-serif;
-  color: #f8fafc;
+  font-family: "Inter", sans-serif;
+  color: var(--text-primary);
   overflow-x: hidden;
 }
 
 .dashboard-container {
-  position: relative;
   min-height: 100vh;
   padding: 40px;
+  position: relative;
 }
 
-/* Ambient Mesh Background */
 .mesh-gradient {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
+  inset: 0;
   z-index: -1;
   background: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.15) 0px, transparent 50%);
-  filter: blur(80px);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.15), transparent 40%);
+  filter: blur(90px);
 }
+
+/* =========================================
+   GLASS CARD MODULE
+========================================= */
 
 .glass-card {
   background: var(--glass);
+  border: 1px solid var(--glass-border);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--glass-border);
   border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Header Styling */
+/* =========================================
+   HEADER & ATTACHMENT ACTION
+========================================= */
+
 .glass-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
   margin-bottom: 40px;
+  padding: 28px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
 }
 
-.brand { display: flex; align-items: center; gap: 15px; }
-.logo-sq { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; box-shadow: 0 0 20px var(--accent-blue); }
-.brand h1 { margin: 0; font-size: 24px; letter-spacing: 2px; }
-.brand p { margin: 0; font-size: 10px; opacity: 0.5; letter-spacing: 1px; }
-
-.sync-status {
-  font-size: 12px;
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--accent-green);
-  padding: 8px 16px;
-  border-radius: 100px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  display: flex; align-items: center; gap: 8px;
+.glass-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
-.dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulse 2s infinite; }
+.glass-header p {
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
 
-/* Grid Systems */
+input[type="file"] {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 260px;
+}
+
+input[type="file"]::file-selector-button {
+  border: none;
+  background: var(--accent-blue);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* =======================================================
+   KPI SECTION (ADJUSTED TO SINGLE ROW LAYOUT)
+   ======================================================= */
+
 .kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  display: flex; /* Switched to horizontal row flexbox alignment */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 16px; /* Tightened layout spacing to elegantly hold more metric blocks */
+  margin-bottom: 32px;
+  width: 100%;
 }
 
-.kpi-label { font-size: 11px; opacity: 0.6; letter-spacing: 1px; margin-bottom: 10px; }
-.kpi-value { font-size: 36px; font-weight: 800; margin: 0; }
-.kpi-sub { font-size: 12px; margin-top: 8px; opacity: 0.4; }
-
-/* Analytics Row */
-.analytics-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
+.kpi-card {
+  flex: 1; /* Guarantees every dynamic card takes identical equal widths inside the single row */
+  min-width: 0; /* Prevents text overflow breaking the layout flex box boundaries */
+  min-height: 120px; /* Reduced unnecessary height allocation */
+  padding: 20px; /* Balanced interior card spacing */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.chart-container { height: 250px; margin-top: 20px; }
+.kpi-card p.card-label {
+  font-size: 11px; /* Slightly compacted text scaling */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  white-space: nowrap; /* Keeps metric titles structural */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Smooth fade text clipping if any labels are long */
+}
 
+.kpi-card h2 {
+  margin: 0;
+  font-size: 28px; /* Adjusted fluid sizing to keep numbers on a single line */
+  font-weight: 800;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+}
+
+.target-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+/* Placeholder box fallback card spacing rule configuration */
+.dynamic-placeholder-card {
+  width: 100%;
+  text-align: center;
+  padding: 30px;
+}
+
+/* =======================================================
+   STRICT SIDE-BY-SIDE VISUAL CHART ROW (LEFT / RIGHT SPLIT)
+   ======================================================= */
+
+.charts-side-by-side-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr; 
+  gap: 24px;
+  margin-bottom: 32px;
+  align-items: stretch; 
+}
+
+.chart-box h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.chart-container,
 .doughnut-container {
   position: relative;
-  height: 200px;
-  display: flex; justify-content: center; align-items: center;
+  height: 320px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.doughnut-center {
-  position: absolute;
-  text-align: center;
-}
-.doughnut-center p { margin: 0; font-size: 12px; opacity: 0.5; }
-.doughnut-center h4 { margin: 0; font-size: 28px; }
+/* =========================================
+   FULL WIDTH TABLE UNDERNEATH
+========================================= */
 
-/* Table Styling */
-.table-section { overflow: hidden; padding: 0; }
-.table-header { padding: 24px; border-bottom: 1px solid var(--glass-border); }
-.table-wrapper { padding: 10px 24px 24px; }
-
-table { width: 100%; border-collapse: collapse; text-align: left; }
-th { font-size: 12px; opacity: 0.4; padding: 15px 10px; text-transform: uppercase; letter-spacing: 1px; }
-td { padding: 18px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
-tr:last-child td { border: none; }
-
-.efficiency-pill {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--accent-blue);
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-weight: bold;
+.table-row-full-width {
+  width: 100%;
+  margin-bottom: 32px;
 }
 
-/* Animations */
-@keyframes drop { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+.table-section {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
-.animate-drop { animation: drop 0.8s forwards; }
-.animate-pop { opacity: 0; animation: pop 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards; }
+.table-section h3 {
+  margin: 0;
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 20px;
+}
 
-.delay-0 { animation-delay: 0.1s; }
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.3s; }
-.delay-3 { animation-delay: 0.4s; }
-.delay-4 { animation-delay: 0.5s; }
-.delay-5 { animation-delay: 0.6s; }
-.delay-6 { animation-delay: 0.7s; }
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
 
-.red-text { color: var(--accent-red); font-weight: bold; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+td {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 14px;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.agent-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.success-cell { color: var(--accent-green); font-weight: 500; }
+.warning-cell { color: rgba(255, 255, 255, 0.7); }
+.high-alert { color: var(--accent-red); font-weight: 700; }
+
+/* =========================================
+   RESPONSIVE SCALING MEDIA QUERIES
+========================================= */
+
+@media (max-width: 1024px) {
+  /* Safely handles responsiveness for smaller screens or tablets */
+  .kpi-grid {
+    flex-wrap: wrap; /* Allows wrap sequence on mobile systems */
+  }
+  .kpi-card {
+    flex: 1 1 calc(50% - 16px); /* 2 columns wide configuration on small screens */
+  }
+}
+
+@media (max-width: 992px) {
+  .charts-side-by-side-row {
+    grid-template-columns: 1fr;
+  }
+  .chart-container,
+  .doughnut-container {
+    height: 280px;
+  }
+}
+
+@media (max-width: 576px) {
+  .kpi-card {
+    flex: 1 1 100%; /* Spans full width single vertical stack pattern on mobile screen sizes */
+  }
+  .dashboard-container { padding: 20px; }
+  .glass-header { flex-direction: column; align-items: flex-start; }
+  .glass-header h1 { font-size: 26px; }
+  input[type="file"] { width: 100%; }
+  th, td { padding: 14px 16px; }
+  table { min-width: 750px; }
+}
