@@ -12,16 +12,26 @@ FILE_PATH = os.path.join(UPLOAD_FOLDER, FILE_NAME)
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file payload chunk received"}), 400
+    print("Files tracking log:", request.files) # Prints to your terminal to help debug
     
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "Empty filename selection error"}), 400
+    if not request.files:
+        return jsonify({"error": "No file payload received by Flask backend"}), 400
 
+    # Dynamically grab the first file key sent by the frontend
+    file_key = list(request.files.keys())[0]
+    file = request.files[file_key]
     
-    file.save(FILE_PATH)
-    return jsonify({"message": f"Workbook saved globally inside VM directory {UPLOAD_FOLDER}!"}), 200
+    if file.filename == '':
+        return jsonify({"error": "Empty file name"}), 400
+
+    try:
+        # Overwrite latest_dashboard.xlsx in your folder
+        file.save(FILE_PATH)
+        print(f"File successfully written to: {FILE_PATH}")
+        return jsonify({"message": f"Workbook saved globally inside VM directory {UPLOAD_FOLDER}!"}), 200
+    except Exception as e:
+        print(f"WRITE ERROR DETECTED: {str(e)}")
+        return jsonify({"error": f"Failed to save to disk: {str(e)}"}), 500
 
 
 # ==========================================
