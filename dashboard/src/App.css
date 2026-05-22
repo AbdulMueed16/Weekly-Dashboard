@@ -8,22 +8,15 @@
 
   --text-primary: #f8fafc;
   --text-secondary: rgba(255, 255, 255, 0.65);
-
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* =========================================
-   GLOBAL & CONTAINERS
-========================================= */
-
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   background: #020617;
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   color: var(--text-primary);
   overflow-x: hidden;
 }
@@ -39,14 +32,10 @@ body {
   inset: 0;
   z-index: -1;
   background: 
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 40%),
-    radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.15), transparent 40%);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.14), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.05), transparent 45%);
   filter: blur(90px);
 }
-
-/* =========================================
-   GLASS CARD MODULE
-========================================= */
 
 .glass-card {
   background: var(--glass);
@@ -54,257 +43,138 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-radius: 24px;
-  padding: 28px;
+  padding: 24px;
   box-shadow: var(--shadow);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* =========================================
-   HEADER & ATTACHMENT ACTION
+   HEADER PANEL
 ========================================= */
-
 .glass-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  margin-bottom: 40px;
-  padding: 28px;
+  margin-bottom: 32px;
+  padding: 24px 28px;
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
 }
-
-.glass-header h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.glass-header p {
-  margin-top: 8px;
-  color: var(--text-secondary);
-  font-size: 14px;
-}
+.glass-header h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+.glass-header p { margin-top: 6px; color: var(--text-secondary); font-size: 14px; }
 
 input[type="file"] {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
-  width: 260px;
 }
-
 input[type="file"]::file-selector-button {
   border: none;
   background: var(--accent-blue);
   color: white;
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   margin-right: 12px;
   cursor: pointer;
   font-weight: 600;
 }
 
-/* =======================================================
-   KPI SECTION (ADJUSTED TO SINGLE ROW LAYOUT)
-   ======================================================= */
+/* ==========================================
+   METRICS TARGET ROW GRID CONFIG
+========================================== */
+.corporate-row-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-primary);
+  margin: 36px 0 16px 0;
+  font-weight: 800;
+  border-left: 3px solid var(--accent-green);
+  padding-left: 10px;
+}
 
-.kpi-grid {
-  display: flex; /* Switched to horizontal row flexbox alignment */
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 16px; /* Tightened layout spacing to elegantly hold more metric blocks */
-  margin-bottom: 32px;
+.kpi-row-layout {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 16px;
+  margin-bottom: 36px;
   width: 100%;
 }
 
-.kpi-card {
-  flex: 1; /* Guarantees every dynamic card takes identical equal widths inside the single row */
-  min-width: 0; /* Prevents text overflow breaking the layout flex box boundaries */
-  min-height: 120px; /* Reduced unnecessary height allocation */
-  padding: 20px; /* Balanced interior card spacing */
+.matrix-kpi-box {
+  min-height: 106px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.kpi-card p.card-label {
-  font-size: 11px; /* Slightly compacted text scaling */
-  letter-spacing: 1px;
+.matrix-kpi-box p.card-label {
+  font-size: 11px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
   color: var(--text-secondary);
-  margin-bottom: 8px;
-  white-space: nowrap; /* Keeps metric titles structural */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Smooth fade text clipping if any labels are long */
+  margin: 0 0 8px 0;
+  line-height: 1.4;
 }
-
-.kpi-card h2 {
+.matrix-kpi-box h2 {
   margin: 0;
-  font-size: 28px; /* Adjusted fluid sizing to keep numbers on a single line */
+  font-size: 26px;
   font-weight: 800;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: nowrap;
-}
-
-.target-sub {
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-weight: 400;
-  margin-left: 6px;
-  opacity: 0.8;
-}
-
-/* Placeholder box fallback card spacing rule configuration */
-.dynamic-placeholder-card {
-  width: 100%;
-  text-align: center;
-  padding: 30px;
+  color: #fff;
 }
 
 /* =======================================================
-   STRICT SIDE-BY-SIDE VISUAL CHART ROW (LEFT / RIGHT SPLIT)
+   FULL SCREEN GRAPH CHART COMPONENT VIEWPORTS
    ======================================================= */
-
-.charts-side-by-side-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr; 
-  gap: 24px;
-  margin-bottom: 32px;
-  align-items: stretch; 
+.full-width-chart-row {
+  width: 100%;
+  margin-bottom: 36px;
 }
+.full-width-chart-row h3 { margin-top: 0; margin-bottom: 20px; font-size: 16px; font-weight: 700; }
 
-.chart-box h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.chart-container,
-.doughnut-container {
+.chart-container {
   position: relative;
   height: 320px;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* =========================================
-   FULL WIDTH TABLE UNDERNEATH
-========================================= */
-
-.table-row-full-width {
-  width: 100%;
-  margin-bottom: 32px;
-}
-
-.table-section {
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.table-section h3 {
-  margin: 0;
-  padding: 24px 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 20px;
-}
-
-.table-wrapper {
-  overflow-x: auto;
+/* High-fidelity horizontal visualization frame block dimensions */
+.agent-chart-container {
+  position: relative;
+  height: 560px; /* Expansive layout height so all 13 agents display with pristine breathing room */
   width: 100%;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-th {
-  padding: 16px 24px;
-  text-align: left;
-  font-size: 11px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 700;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-td {
-  padding: 18px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+.center-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 80px 0;
   font-size: 14px;
 }
 
-tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.agent-name {
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.success-cell { color: var(--accent-green); font-weight: 500; }
-.warning-cell { color: rgba(255, 255, 255, 0.7); }
-.high-alert { color: var(--accent-red); font-weight: 700; }
-
 /* =========================================
-   RESPONSIVE SCALING MEDIA QUERIES
+   RESPONSIVE DESIGN SYSTEM SCALABILITY
 ========================================= */
-
-@media (max-width: 1024px) {
-  /* Safely handles responsiveness for smaller screens or tablets */
-  .kpi-grid {
-    flex-wrap: wrap; /* Allows wrap sequence on mobile systems */
-  }
-  .kpi-card {
-    flex: 1 1 calc(50% - 16px); /* 2 columns wide configuration on small screens */
-  }
+@media (max-width: 1200px) {
+  .kpi-row-layout { grid-template-columns: repeat(3, 1fr); }
 }
-
-@media (max-width: 992px) {
-  .charts-side-by-side-row {
-    grid-template-columns: 1fr;
-  }
-  .chart-container,
-  .doughnut-container {
-    height: 280px;
-  }
-}
-
-@media (max-width: 576px) {
-  .kpi-card {
-    flex: 1 1 100%; /* Spans full width single vertical stack pattern on mobile screen sizes */
-  }
+@media (max-width: 768px) {
+  .kpi-row-layout { grid-template-columns: repeat(2, 1fr); }
   .dashboard-container { padding: 20px; }
   .glass-header { flex-direction: column; align-items: flex-start; }
-  .glass-header h1 { font-size: 26px; }
-  input[type="file"] { width: 100%; }
-  th, td { padding: 14px 16px; }
-  table { min-width: 750px; }
+  .agent-chart-container { height: 700px; } /* Expand canvas slightly on packed narrow mobile frames */
+}
+@media (max-width: 480px) {
+  .kpi-row-layout { grid-template-columns: 1fr; }
 }
